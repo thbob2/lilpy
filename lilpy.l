@@ -3,22 +3,25 @@
 	#include<string.h>
 	#include<stdlib.h>
 	#include "lilpy.tab.h"
+	
 	extern FILE * yyin;
+	
 	int NL=1,NC=1;
+	
 	extern YYSTYPE yylval;
 %}
 
 IDF [A-Z][A-Za-z0-9]*
 int [-]?[0-9]+
 float [-]?[0-9]+[/.][0-9]+
-OPR "=="|"<"|">"|"<="|">="|"!="
+
 alpha [a-zA-Z]
 char [^0-9]
 
 %%
 
 " " {NC++;}
-"\t"		{return(TAB);}
+"\t"		{NC=NC+1; return(TAB);}
 "\n"		{NC=1; NL++ ;}
 "def"    	{NC=NC+strln(yytext);return(DEF);}
 "if"    	{NC=NC+strln(yytext); return(IF);}
@@ -49,7 +52,7 @@ char [^0-9]
     }
 {int} {NC=NC+strlen(yytext);yylval.int=atoi(yytext); return int;}
 {float} {NC=NC+strlen(yytext);yylval.float=atof(yytext); return float;}
-{OPR} {NC=NC+strlen(yytext);yylval.string=strdup(yytext);return OPR; }
+
 . {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
 %%
 	int yywrap()

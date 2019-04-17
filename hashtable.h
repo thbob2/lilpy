@@ -17,6 +17,7 @@ typedef struct Entite
 	char name[CHLEN];
 	char code[CHLEN];
 	char state[CHLEN];
+	char type[CHLEN];
 	int  sizeE;
  	struct Entite *nxt;
 } Entite;
@@ -47,13 +48,14 @@ int search(char *str, int position){
 	else return -1;
 }
 
-void insert(char *ent_name, char *ent_code,char *ent_st ,int *ent_size,int position){
+void insert(char *ent_name, char *ent_code,char *ent_st ,char *ent_type,int *ent_size,int position){
+	
 	Entite *ptr=NULL;
-
 	if(search(ent_name,position) == 1){
 		ptr=(Entite*)malloc(sizeof(Entite));
 		strcpy(ptr->name,ent_name);
 		strcpy(ptr->code,ent_code);
+		strcpy(ptr->type,ent_type);
 		strcpy(ptr->state,ent_st);
 		ptr->size =ent_size;
 		ptr->nxt = NULL;
@@ -69,17 +71,72 @@ void insert(char *ent_name, char *ent_code,char *ent_st ,int *ent_size,int posit
 	}
 }
 void showTab(){
-	printf("\n/***************Table des symboles ******************/\n");
- 	printf("________________________________________________________\n");
-	printf("\t|      NomEntite      | index |       CodeEntite     |\n");
-	printf(" ___________________________________________________\n");
+	//printf("\n/--------------Table des symboles ------------------/\n");
+ 	printf("_________________________________________________________________________________________________________________\n");
+	printf("\t|      Nom Entite      | index |   Code Entite  |   Etat Entite   |     Type Entite     |    Taille Entite     |\n");
+	printf(" _______________________________________________________________________________________________________________\n");
 	for (int i = 0; i < MAX;i++)
 	{ 
 		Entite *ptr = Tabhash[i].head;
 		while(ptr!=NULL){
-			printf("\t|%15s| %5d |%20s  |\n",ptr->nom,i,ptr->code);
+			printf("\t|%15s| %5d | %20s | %20s | %20s | %5d  |\n",ptr->name,i,ptr->code,ptr->state,ptr->type,ptr->sizeE);
 			ptr = ptr->nxt;
 		}
 		printf("\n");
 	}
 }
+
+int searchE(struct Entite** head,char ename[12]){
+	struct Entite* flow;
+	flow = *head;
+	if(flow!=NULL){ 
+	 	while(flow!=NULL && strcmp((*flow).name,ename)!=0){
+	 		flow=(*flow).SVT;
+	  	}
+	  	if(flow==NULL) return 0;
+	  	else return 1; 
+	}
+	return 0;
+}
+
+char* getType(struct Entite** head, char nameE[CHLEN]){
+	struct Enitite *flow;
+	flow = *head;
+	if(flow!=NULL){
+		if(strcmp((*flow).nameE,name)==0){
+			return (*flow).type;
+		}
+		else{
+			flow=(*flow).nxt;
+		}
+	}
+	return "";
+}
+char* getState(struct Entite** head, char nameE[CHLEN]){
+	struct Enitite *flow;
+	flow = *head;
+	if(flow!=NULL){
+		if(strcmp((*flow).nameE,name)==0){
+			return (*flow).state;
+		}
+		else{
+			flow=(*flow).nxt;
+		}
+	}
+	return "";
+}
+
+int getSize(struct Entite** head, char nameE[CHLEN]){
+	struct Enitite *flow;
+	flow = *head;
+	if(flow!=NULL){
+		if(strcmp((*flow).nameE,name)==0){
+			return (*flow).sizeE;
+		}
+		else{
+			flow=(*flow).nxt;
+		}
+	}
+	return 0;
+}
+

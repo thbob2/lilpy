@@ -1,8 +1,19 @@
 %{
-	#include<stdio.h>
-	#include<stdlib.h>
-	#include<string.h>
-	#include"hashtable.h"
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include "hashtable.h"
+	#include "pile.c"
+	#include "quad.c"
+	struct Entite *Ts;
+	struct QUAD *q = NULL;
+	struct STACK *stack;
+	int num = 1;
+	int tempo = 1;
+	char *chartempo;
+	char ConstType[10];
+	char curtype[10]="";
+
 	extern FILE *yyin;
 	extern FILE yyout;
 
@@ -118,15 +129,26 @@ int count=0;
 
 int main(int argc, char *argv[])
 {
-	yyin = fopen(argv[1], "r");
-	if(yyparse()==1)
+
+	yyin=fopen("Test.txt","r");
+	yyparse();
+	showTab(&TS);
+	
+	operate(&Q,&TS);
+
+	showq(&Q);
+	
+	return 0;
+	/*if(yyparse()==1)
 		printf("\nParsing failed\n");
 	   else
 		printf("\nParsing completed successfully\n");
 	   fclose(yyin);
-	return 0;
-}
+	return 0;*/
 
-yyerror(char *s){
-	printf("%d: %s %s\n", yylineno, s, yytext );
+}
+int yyerror(char* msg)
+{
+printf("Erreur syntaxique a la ligne %d colonne %d\n",NL,NC);
+return 1;
 }
