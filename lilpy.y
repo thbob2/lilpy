@@ -69,7 +69,7 @@ FunctionCall: ID'('')'
 ArrayUsage: ID'['Assignment']'
 	;
 
-Function: DEF ID '(' ArgListOpt ')' CompoundSt
+Function: DEF ID '(' ArgListOpt ')' ':' CompoundSt
 	;
 
 ArgListOpt: ArgList
@@ -90,23 +90,23 @@ StmtList: StmtList Stmt
 	|
 	;
 
-Stmt: 	WhileStmt
+Stmt: WhileStmt
 	| Declaration
 	| ForStmt
 	| IfStmt
 	| PrintFunc
 	;
 
-WhileStmt: WHILE '(' Expr ')' Stmt
+WhileStmt: WHILE '(' Expr ')' Stmt ':'
 	| WHILE '(' Expr ')' CompoundSt
 	;
 
-ForStmt: FOR ID IN RANGE '(' Expr ')' Stmt
-	| FOR ID IN RANGE '(' Expr ')' CompoundSt
+ForStmt: FOR ID IN RANGE '(' Expr ')' ':'Stmt
+	| FOR ID IN RANGE '(' Expr ') ':' CompoundSt
 	;
 
-IfStmt: IF '(' Expr ')'
-		Stmt
+IfStmt: IF '(' Expr ')' ':'
+			Stmt
 	;
 
 PrintFunc: PRINT '(' ID ')' 
