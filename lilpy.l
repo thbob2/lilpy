@@ -1,4 +1,5 @@
 %{	
+	#include "TS.h"
 	#include<stdio.h>
 	#include<string.h>
 	#include<stdlib.h>
@@ -11,26 +12,18 @@
 	extern YYSTYPE yylval;
 %}
 
-IDF [A-Z][A-Za-z0-9]*
+IDF [A-Z][A-Za-z]*
 int [-]?[0-9]+
-float [-]?[0-9]+[/.][0-9]+
-
 alpha [a-zA-Z]
-char [^0-9]
 
 %%
 
 " " {NC++;}
-"\t"		{NC=NC+1; return(TAB);}
+"\t"		{NC=NC+4; return(TAB);}
 "\n"		{NC=1; NL++ ;}
-"def"    	{NC=NC+strln(yytext);return(DEF);}
+"int"		{NC = NC+strln(yytext); yyval.nom = strdup(yytext); return(INT);}
 "if"    	{NC=NC+strln(yytext); return(IF);}
 "elif"  	{NC=NC+strln(yytext); return(ELIF);}
-"else"  	{NC=NC+strln(yytext); return(ELSE);}
-"for"		{NC=NC+strln(yytext); return(FOR);}
-"while" 	{NC=NC+strln(yytext); return(WHILE);}
-"in"    	{NC=NC+strln(yytext); return(IN);}
-"range"		{NC=NC+strln(yytext); return(RANGE);}
 "print"		{NC=NC+strln(yytext); return(PRINT);}
 "=="    	{NC=NC+2; return(EQ);}
 "<="    	{NC=NC+2; return(LE);}
@@ -46,12 +39,15 @@ char [^0-9]
 "*" {NC++; return '*'; }
 "/" {NC++; return '/'; }
 {IDF} { 
-    if(strlen(yytext)>8){
-    	printf("Erreur! l'identifiant %s est trop long (Taille maximum 8 caractere)\n",yytext);}										
-       	NC=NC+strlen(yytext); yylval.string=strdup(yytext);return IDF;
+    if(strlen(yytext)>18){printf("Erreur! l'identifiant %s est trop long (Taille maximum 8 caractere)\n",yytext);}
+       	NC=NC+strlen(yytext); 
+       	yylval.nom=strdup(yytext);
+       	return(IDF);
     }
-{int} {NC=NC+strlen(yytext);yylval.int=atoi(yytext); return int;}
-{float} {NC=NC+strlen(yytext);yylval.float=atof(yytext); return float;}
+{int} {NC=NC+strlen(yytext); 
+		yylval.nom = strdup(yytext); 
+		return int;}
+
 
 . {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
 %%
