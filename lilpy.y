@@ -2,17 +2,19 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <string.h>
-	#include "TS.h"
+	#include "hashtable.h"
 	#include "RS.h"
 	include "quad.c"
+	include "pile.c"
 	int yylex();
 	int yyerror(char *)
 	extern FILE *yyin;
 	extern FILE yyout;
-
 	struct QUAD *Q = NULL;
-	int num = 1;
-	int temp = 1;
+	struct STACK *stack;
+	struct Entite *TS;
+	int num = 1 ;
+	int temp = 1 ;
 	char * tempc;
 	char ConstType[10];
 	char currenttype[10]="";
@@ -23,30 +25,39 @@
 	int int; 
 	struct s {char * val; int type;} s;
 }
-%token  '(' ')' ':'  ',' '+' '*' '-' '/' 
-%token IF ELIF ELSE PRINT int
-%token TAB
-%token <nom> IDF
-%token <int> NUM
+%token <nom> IDF 
+%token <int> NUM 
+%token IF ELIF ELSE PRINT int 
 
+%token  '(' ')' ':'  ',' '+' '*' '-' '/' 
+%token TAB jumpl
 %right '='
 %left '+' '-'
 %left '*' '/'
 %left LE GE EQ NE LT GT
-%type <s> Assignment
+%type <s> Assignment VAR Declaration inst 
 %start start
 
 %%
 
-start: Declaration inst ;
+start: Declaration
+	 | inst 
+	 | Stmt
+	 ;
 
-Declaration: int IDF { doubleDec($2); inserer(strdup($2),1);
 
-}
+Stmt: Declaration 
+	| inst
+	| IfStmt
+	| PrintFunc
+	;
+
+Declaration: int IDF {if(!search(&TS,$2)) insert(&TS,$2,int,1,"VAR",NL); }
 ;
 
-inst: IDF '=' Assignment { insq(&Q,"=",$3.val,"",$1.val,num);
-						 num++;
+inst: IDF '=' Assignment { if(!search(&TS,$1)) insert(&TS,$1,int,1,"VAR",NL);
+						   insq(&Q,"=",$3.val,"",$1.val,num);
+						   num++;
 						}
 	;
 
@@ -84,77 +95,115 @@ Assignment: Assignment '+' Assignment { char* tempc = malloc(sizeof(10));
 										}
 	    	| '(' Assignment ')' {$$.type=$2.type; $$.val=$2.val;}
 			| NUM {$$.type=1; $$.val=$1;}
-		  	| IDF  {dec($1);$$type=typeÎdf($1); $$.val=strdup($1);}
+		  	| IDF  {if(search(&TS,$1)) printf("Erreur a la ligne %d : IDF non declaré\n " ,NL); }
 		  	;
-/*
-CompoundSt: TAB StmtList
-	;
 
-StmtList: StmtList Stmt
-	;
+IfStmt: IF '(' cond ')' ':' /*incre;entation*/
+		jumpl TAB 
+		Stmt 
+		elifstmt
+;
+elifstmt: elsestmt
+		| ELIF '(' cond ')' ':'/*incre;entation*/
+		  TAB Stmt
+		  elsestmt 
+;	
+elsestmt: 
+		| ELSE ':'/*incre;entation*/
+		  jumpl TAB 
+		  Stmt
+;	
 
-Stmt: Declaration inst
-	| inst
-	| IfStmt
-	| PrintFunc
-	;
+VAR: IDF
+	|NUM
+	;	
 
-IfStmt: IF '(' Expr ')' ':'
-		TAB Stmt
-	
-	|	IF '('Expr ')' ':'
-		TAB stmt
-		ELSE:
-		TAB stmt
-	|	IF '('Expr')' ':'
-		TAB stmt	
-		ELIF '('Expr ')' ':'
-		ELSE:
-		TAB stmt
-	;
+cond: VAR LE VAR { 	majq(&Q,pull(&stack),num+1);
+					int x;
+					x=pull(&stack);
+                    char *tempc;
+                    tempc=malloc(sizeof(10));
+                    sprintf(tempc,"%d",x);
+                    insq(&Q,"BNE",tempc,$1.val,$3.val,num);
+                    majq(&Q,pull(&stack),num);
+                    num++;
 
+	}
+	| VAR GE VAR {	majq(&Q,pull(&stack),num+1);
+	                int x;
+	                x=pull(&stack);
+	                char *tempc;
+	                tempc=malloc(sizeof(10));
+	                sprintf(tempc,"%d",x);
+	                insq(&Q,"BGE",tempc,$1.val,$3.val,num);
+	                majq(&Q,pull(&stack),num);
+	                num++;
+
+	}
+	| VAR NE VAR {	majq(&Q,pull(&stack),num+1);
+                    int x;
+                    x=pull(&stack);
+                    char *tempc;
+                    tempc=malloc(sizeof(10));
+                    sprintf(tempc,"%d",x);
+                    insq(&Q,"BNE",tempc,$1.val,$3.val,num);
+                    majq(&Q,pull(&stack),num);
+                    num++;
+
+	}
+	| VAR GT VAR {	majq(&Q,pull(&stack),num+1);
+                    int x;
+                    x=pull(&stack);
+                    char *tempc;
+                    tempc=malloc(sizeof(10));
+                    sprintf(tempc,"%d",x);
+                    insq(&Q,"BG",tempc,$1.val,$3.val,num);
+                    majq(&Q,pull(&stack),num);
+                    num++;
+
+	}
+	| VAR LT VAR {	majq(&Q,pull(&stack),num+1);
+                    int x;
+                    x=pull(&stack);
+                    char *tempc;
+                    tempc=malloc(sizeof(10));
+                    sprintf(tempc,"%d",x);
+                    insq(&Q,"BL",tempc,$1.val,$3.val,num);
+                    majq(&Q,pull(&stack),num);
+                    num++;
+
+	}
+	| VAR EQ VAR {	majq(&Q,pull(&stack),num+1);
+                    int x;
+                    x=pull(&stack);
+                    char *tempc;
+                    tempc=malloc(sizeof(10));
+                    sprintf(tempc,"%d",x);
+                    insq(&Q,"BE",tempc,$1.val,$3.val,num);
+                    majq(&Q,pull(&stack),num);
+                    num++;
+
+	}
+	;
 PrintFunc: PRINT '(' IDF ')' 
 	| PRINT '(' NUM ')'
 	;
-
-Expr:
-	| Expr LE Expr
-	| Expr GE Expr
-	| Expr NE Expr
-	| Expr GT Expr
-	| Expr LT Expr
-	| Expr EQ Expr
-	;
-	*/
 %%
-#include"lex.yy.c"
-#include<ctype.h>
-int count=0;
+int yyerror(char* msg){
+	printf("%s ligne %d \n",msg,NL,NC);
+	exit(0);
+	return 1;
+}
 
-int main(int argc, char *argv[])
+int main()
 {
-
 	yyin=fopen("test.txt","r");
-	init ();
-	yyparse();
 	
-	afficherTS();
+	yyparse();
+	showTab(&TS);
 	operate(&Q,&TS);
 
 	showq(&Q);
-	
-	
+	fclose(yyin);
 	return 0;
-	
-	/*if(yyparse()==1)
-		printf("\nParsing failed\n");
-	   else
-		printf("\nParsing completed successfully\n");
-	   fclose(yyin);
-	return 0;*/
-
-}
-int yyerror(char* msg){
-	printf("Erreur syntaxique a la ligne %d colonne %d\n",NL,NC);
-	return 1;
 }

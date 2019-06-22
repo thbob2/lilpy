@@ -70,7 +70,7 @@ void majq(struct QUAD** head, int num,int qend){
 void operate(struct QUAD** head, struct Entite** tsHead){
 	struct QUAD *flow = *head ;
 	while(flow !=NULL){
-		if(strcmp((*flow).op1,"=")==0 && strcmp((*flow).op3,"")==0 && searchE(tsHead,(*flow).result)!=0){
+		if(strcmp((*flow).op1,"=")==0 && strcmp((*flow).op3,"")==0 && search(tsHead,(*flow).result)){
 			struct QUAD *headon = (*flow.nxt);
 			while (headon != NULL && strcmp((*headon).result, (*flow).op2) != 0 && strcmp((*headon).result, (*flow).result) != 0){
 			if (strcmp((*headon).op1, "BGE") != 0 && strcmp((*headon).op1, "BLE") != 0 && strcmp((*headon).op1, "BNE") != 0 && strcmp((*headon).op1, "BG") != 0 && strcmp((*headon).op1, "BE") != 0 && strcmp((*headon).op1, "BL") != 0 && strcmp((*headon).op1, "BR") != 0){
@@ -86,5 +86,53 @@ void operate(struct QUAD** head, struct Entite** tsHead){
       }
     }
     flow = (*flow).nxt;
+  }
+}
+void usless(struct QUAD** Q, struct Entite** TS){
+	struct QUAD* parc = *Q;
+	struct QUAD* father = NULL;
+	while(parc != NULL){
+		if(strcmp((*parc).op1,"=")==0 && search(TS,(*parc).result)){
+			struct QUAD* flow = (*parc).nxt;
+			while(flow != NULL && strcmp((*parc).result,(*flow).op2)!=0 && strcmp((*parc).result,(*flow).op3)!=0 && strcmp((*flow).op1, "BGE") != 0 && strcmp((*flow).op1, "BLE") != 0 && strcmp((*flow).op1, "BNE") != 0 && strcmp((*flow).op1, "BG") != 0 && strcmp((*flow).op1, "BE") != 0 && strcmp((*flow).op1, "BL") != 0 || (flow != NULL && !(strcmp((*flow).op1, "BGE") != 0 && strcmp((*flow).op1, "BLE") != 0 && strcmp((*flow).op1, "BNE") != 0 && strcmp((*flow).op1, "BG") != 0 && strcmp((*flow).op1, "BE") != 0 && strcmp((*flow).op1, "BL") != 0))){
+        flow=(*flow).nxt;
+      }
+      if(flow==NULL){
+        if(father==NULL){
+          *Q=(**Q).nxt;
+          struct  QUAD* Change = (*parc).nxt;
+          while(Change!= NULL){
+            if(strcmp((*Change).op1, "BGE") != 0 && strcmp((*Change).op1, "BLE") != 0 && strcmp((*Change).op1, "BNE") != 0 && strcmp((*Change).op1, "BG") != 0 && strcmp((*Change).op1, "BE") != 0 && strcmp((*Change).op1, "BL") != 0  && strcmp((*Change).op1, "BR") != 0){
+              (*Change).QN--;
+            }else{
+              (*Change).QN--;
+              if(atoi((*Change).op2)>(*parc).QN){
+              int n=atoi((*Change).op2)-1;
+              sprintf((*Change).op2,"%d",n);
+              }
+            }
+            Change=(*Change).nxt;
+          }
+        }else{
+          (*father).nxt=(*parc).nxt;
+          parc=father;
+          struct  QUAD* Change = (*parc).nxt;
+          while(Change!= NULL){
+            if(strcmp((*Change).op1, "BGE") != 0 && strcmp((*Change).op1, "BLE") != 0 && strcmp((*Change).op1, "BNE") != 0 && strcmp((*Change).op1, "BG") != 0 && strcmp((*Change).op1, "BE") != 0 && strcmp((*Change).op1, "BL") != 0  && strcmp((*Change).op1, "BR") != 0){
+              (*Change).QN--;
+            }else{
+              (*Change).QN--;
+              if(atoi((*Change).op2)>(*parc).QN){
+              int n=atoi((*Change).op2)-1;
+              sprintf((*Change).op2,"%d",n);
+              }
+            }
+            Change=(*Change).nxt;
+          }
+        }
+      }
+    }
+    father = parc;
+    parc=(*parc).nxt;
   }
 }

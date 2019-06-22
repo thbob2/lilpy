@@ -39,20 +39,21 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     IF = 258,
-     ELIF = 259,
-     ELSE = 260,
-     PRINT = 261,
-     int = 262,
-     TAB = 263,
-     IDF = 264,
-     NUM = 265,
-     GT = 266,
-     LT = 267,
-     NE = 268,
-     EQ = 269,
-     GE = 270,
-     LE = 271
+     IDF = 258,
+     NUM = 259,
+     IF = 260,
+     ELIF = 261,
+     ELSE = 262,
+     PRINT = 263,
+     int = 264,
+     TAB = 265,
+     jumpl = 266,
+     GT = 267,
+     LT = 268,
+     NE = 269,
+     EQ = 270,
+     GE = 271,
+     LE = 272
    };
 #endif
 
@@ -63,7 +64,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 21 "lilpy.y"
+#line 23 "lilpy.y"
 
 	char* nom;
 	int int; 
@@ -72,7 +73,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 76 "lilpy.tab.h"
+#line 77 "lilpy.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
