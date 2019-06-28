@@ -14,6 +14,9 @@
 	struct STACK *stack;
 	struct Entite *TS;
 	int num = 1 ;
+	int tcond =0;
+	int tifq = 0;
+	int telifq =0;
 	int temp = 1 ;
 	int nbif = 0;
 	char * tempc;
@@ -28,7 +31,7 @@
 }
 %token <s> IDF 
 %token <int> NUM 
-%token IF ELIF ELSE PRINT int 
+%token IF ELIF ELSE int 
 
 %token  '(' ')' ':'  ',' '+' '*' '-' '/' 
 %token TAB
@@ -46,8 +49,7 @@ start: Declaration
 	 | Stmt
 	 ;
 
-
-Stmt: Declaration 
+ Stmt: Declaration
 	| inst
 	| IfStmt
 	| PrintFunc
@@ -70,36 +72,36 @@ Assignment: Assignment '+' Assignment { char* tempc = malloc(sizeof(10));
 										num++
 										strcpy($$.val,tempc);
 									  }
-			| Assignment '-' Assignment {	char* tempc = malloc(sizeof(10));
-											sprintf(tempc,"T%d",temp);
-											temp++;
-											insq(&Q,"-",$1.val,$3.val,tempc,num);
-											num++;
-											strcpy($$.val,tempc);
+	| Assignment '-' Assignment {char* tempc = malloc(sizeof(10));
+								sprintf(tempc,"T%d",temp);
+								temp++;
+								insq(&Q,"-",$1.val,$3.val,tempc,num);
+								num++;
+								strcpy($$.val,tempc);
 
 										}
-			| Assignment '*' Assignment {	char* tempc = malloc(sizeof(10));
-											sprintf(tempc,"T%d",temp);
-											temp++;
-											insq(&Q,"*",$1.val,$3.val,tempc,num);
-											num++;
-											strcpy($$.val,tempc);
+	| Assignment '*' Assignment {char* tempc = malloc(sizeof(10));
+								sprintf(tempc,"T%d",temp);
+								temp++;
+								insq(&Q,"*",$1.val,$3.val,tempc,num);
+								num++;
+								strcpy($$.val,tempc);
 
 										}
-	    	| Assignment '/' Assignment{	char* tempc = malloc(sizeof(10));
-											sprintf(tempc,"T%d",temp);
-											temp++;
-											insq(&Q,"/",$1.val,$3.val,tempc,num);
-											num++;
-											strcpy($$.val,tempc);
-
-										}
+	| Assignment '/' Assignment{char* tempc = malloc(sizeof(10));
+								sprintf(tempc,"T%d",temp);
+								temp++;
+								insq(&Q,"/",$1.val,$3.val,tempc,num);
+								num++;
+								strcpy($$.val,tempc);
+								}
 	    	| '(' Assignment ')' {$$.type=$2.type; $$.val=$2.val;}
 			| NUM {$$.type=1; $$.val=$1;}
 		  	| IDF  {if(search(&TS,$1)) printf("Erreur a la ligne %d : IDF non declaré\n " ,NL); }
 		  	;
 
-IfStmt: IF '(' cond ')' ':' /*incrementation*/
+IfStmt: IF '(' cond ')' ':'  {/*incrémentation*/
+							  nbif++;}							
 		TAB Stmt 
 		elifstmt
 ;
@@ -110,7 +112,7 @@ elifstmt: elsestmt
 ;	
 elsestmt: 
 		| ELSE ':'/*incrementation*/
-		  TAB Stmt
+		  TAB Stmt 
 ;	
 
 VAR: IDF
@@ -123,7 +125,7 @@ cond: VAR LE VAR { 	majq(&Q,pull(&stack),num+1);
                     char *tempc;
                     tempc=malloc(sizeof(10));
                     sprintf(tempc,"%d",x);
-                    insq(&Q,"BLE",tempc,$1.val,$3.val,num);
+                    insq(&Q,"BNE",tempc,$1.val,$3.val,num);
                     majq(&Q,pull(&stack),num);
                     num++;
 
@@ -184,9 +186,7 @@ cond: VAR LE VAR { 	majq(&Q,pull(&stack),num+1);
 
 	}
 	;
-PrintFunc: PRINT '(' IDF ')' 
-	| PRINT '(' NUM ')'
-	;
+
 %%
 int yyerror(char* msg){
 	printf("%s ligne %d \n",msg,NL,NC);

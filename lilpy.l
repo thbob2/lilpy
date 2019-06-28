@@ -16,9 +16,10 @@ alpha [a-zA-Z]
 TAB ("\t")+
 SPACE(" ")+
 %%
-"int"		{NC += yyleng; yyval.nom = strdup(yytext); return(int);}
+"int"		{NC += yyleng; return(int);}
 "if"    	{NC=NC+strln(yytext); return(IF);}
 "elif"  	{NC=NC+strln(yytext); return(ELIF);}
+"else"		{NC=NC+strln(yytext); return(ELSE);}
 "print"		{NC=NC+strln(yytext); return(PRINT);}
 "=="    	{NC=NC+2; return(EQ);}
 "<="    	{NC=NC+2; return(LE);}
@@ -39,12 +40,9 @@ SPACE(" ")+
        	yylval.nom=strdup(yytext);
        	return(IDF);
     }
-{NUM} {NC=NC+strlen(yytext); 
-		yylval.nom = strdup(yytext); 
-		return NUM;}
-{jumpl}	{NC=1; NL+=yyleng ;}
-{TAB} {NC+=yyleng; printf("----- tab len %i ------ \n",yyleng)}
-{SPACE} {NC+=yyleng;}
+{NUM} {NC=NC+strlen(yytext); yylval.int = atoi(yytext);return NUM;}
+{TAB} {NC+=yyleng; printf("----- tab len %i ------ \n",yyleng);}
+{SPACE} {NC+=yyleng; }
 . {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
 %%
 	int yywrap()
