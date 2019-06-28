@@ -15,6 +15,7 @@
 	struct Entite *TS;
 	int num = 1 ;
 	int temp = 1 ;
+	int nbif = 0;
 	char * tempc;
 	char ConstType[10];
 	char currenttype[10]="";
@@ -25,12 +26,12 @@
 	int int; 
 	struct s {char * val; int type;} s;
 }
-%token <nom> IDF 
+%token <s> IDF 
 %token <int> NUM 
 %token IF ELIF ELSE PRINT int 
 
 %token  '(' ')' ':'  ',' '+' '*' '-' '/' 
-%token TAB jumpl
+%token TAB
 %right '='
 %left '+' '-'
 %left '*' '/'
@@ -98,20 +99,18 @@ Assignment: Assignment '+' Assignment { char* tempc = malloc(sizeof(10));
 		  	| IDF  {if(search(&TS,$1)) printf("Erreur a la ligne %d : IDF non declaré\n " ,NL); }
 		  	;
 
-IfStmt: IF '(' cond ')' ':' /*incre;entation*/
-		jumpl TAB 
-		Stmt 
+IfStmt: IF '(' cond ')' ':' /*incrementation*/
+		TAB Stmt 
 		elifstmt
 ;
 elifstmt: elsestmt
-		| ELIF '(' cond ')' ':'/*incre;entation*/
+		| ELIF '(' cond ')' ':'/*incrementation*/
 		  TAB Stmt
 		  elsestmt 
 ;	
 elsestmt: 
-		| ELSE ':'/*incre;entation*/
-		  jumpl TAB 
-		  Stmt
+		| ELSE ':'/*incrementation*/
+		  TAB Stmt
 ;	
 
 VAR: IDF
@@ -124,7 +123,7 @@ cond: VAR LE VAR { 	majq(&Q,pull(&stack),num+1);
                     char *tempc;
                     tempc=malloc(sizeof(10));
                     sprintf(tempc,"%d",x);
-                    insq(&Q,"BNE",tempc,$1.val,$3.val,num);
+                    insq(&Q,"BLE",tempc,$1.val,$3.val,num);
                     majq(&Q,pull(&stack),num);
                     num++;
 
@@ -202,7 +201,7 @@ int main()
 	yyparse();
 	showTab(&TS);
 	operate(&Q,&TS);
-
+	usless(&Q,&TS);
 	showq(&Q);
 	fclose(yyin);
 	return 0;

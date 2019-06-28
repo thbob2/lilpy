@@ -47,13 +47,12 @@
      PRINT = 263,
      int = 264,
      TAB = 265,
-     jumpl = 266,
-     GT = 267,
-     LT = 268,
-     NE = 269,
-     EQ = 270,
-     GE = 271,
-     LE = 272
+     GT = 266,
+     LT = 267,
+     NE = 268,
+     EQ = 269,
+     GE = 270,
+     LE = 271
    };
 #endif
 
@@ -64,7 +63,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 23 "lilpy.y"
+#line 24 "lilpy.y"
 
 	char* nom;
 	int int; 
@@ -73,7 +72,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 77 "lilpy.tab.h"
+#line 76 "lilpy.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

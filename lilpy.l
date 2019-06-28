@@ -1,8 +1,7 @@
 %{	
-	#include "TS.h"
 	#include<stdio.h>
-	#include<string.h>
 	#include<stdlib.h>
+	#include<string.h>
 	#include "lilpy.tab.h"
 	
 	extern FILE * yyin;
@@ -14,8 +13,8 @@
 IDF [A-Z][A-Za-z]*
 NUM[-]?[0-9]+
 alpha [a-zA-Z]
-TAB ("\t"|"	")+
-jumpl "\n"+
+TAB ("\t")+
+SPACE(" ")+
 %%
 "int"		{NC += yyleng; yyval.nom = strdup(yytext); return(int);}
 "if"    	{NC=NC+strln(yytext); return(IF);}
@@ -44,7 +43,8 @@ jumpl "\n"+
 		yylval.nom = strdup(yytext); 
 		return NUM;}
 {jumpl}	{NC=1; NL+=yyleng ;}
-{TAB} {NC+=yyleng; }
+{TAB} {NC+=yyleng; printf("----- tab len %i ------ \n",yyleng)}
+{SPACE} {NC+=yyleng;}
 . {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
 %%
 	int yywrap()
