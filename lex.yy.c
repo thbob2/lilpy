@@ -549,7 +549,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 18 "lilpy.l"
+#line 17 "lilpy.l"
 
 #line 555 "lex.yy.c"
 
@@ -636,97 +636,97 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 19 "lilpy.l"
-{NC += yyleng; return(int);}
+#line 18 "lilpy.l"
+{NC += yyleng; return(INT);}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 20 "lilpy.l"
+#line 19 "lilpy.l"
 {NC=NC+strln(yytext); return(IF);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 21 "lilpy.l"
+#line 20 "lilpy.l"
 {NC=NC+strln(yytext); return(ELIF);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 22 "lilpy.l"
+#line 21 "lilpy.l"
 {NC=NC+strln(yytext); return(ELSE);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 23 "lilpy.l"
+#line 22 "lilpy.l"
 {NC=NC+strln(yytext); return(PRINT);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 24 "lilpy.l"
+#line 23 "lilpy.l"
 {NC=NC+2; return(EQ);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 25 "lilpy.l"
+#line 24 "lilpy.l"
 {NC=NC+2; return(LE);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 26 "lilpy.l"
+#line 25 "lilpy.l"
 {NC=NC+2; return(NE);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 27 "lilpy.l"
+#line 26 "lilpy.l"
 {NC=NC+1; return(GT);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 28 "lilpy.l"
+#line 27 "lilpy.l"
 {NC=NC+2; return(GE);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 29 "lilpy.l"
+#line 28 "lilpy.l"
 {NC=NC+1; return(LT);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 30 "lilpy.l"
+#line 29 "lilpy.l"
 {NC++; return '=';}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 31 "lilpy.l"
+#line 30 "lilpy.l"
 {NC++; return '(';}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 32 "lilpy.l"
+#line 31 "lilpy.l"
 {NC++; return ')';}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 33 "lilpy.l"
+#line 32 "lilpy.l"
 {NC++; return '+';}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 34 "lilpy.l"
+#line 33 "lilpy.l"
 {NC++; return '-'; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 35 "lilpy.l"
+#line 34 "lilpy.l"
 {NC++; return '*'; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 36 "lilpy.l"
+#line 35 "lilpy.l"
 {NC++; return '/'; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 37 "lilpy.l"
+#line 36 "lilpy.l"
 { 
     if(strlen(yytext)>18){printf("Erreur! l'identifiant %s est trop long (Taille maximum 8 caractere)\n",yytext);}
        	NC=NC+strlen(yytext); 
@@ -736,27 +736,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 43 "lilpy.l"
-{NC=NC+strlen(yytext); yylval.int = atoi(yytext);return NUM;}
+#line 42 "lilpy.l"
+{NC=NC+strlen(yytext); yylval.num = atoi(yytext);return NUM;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 44 "lilpy.l"
+#line 43 "lilpy.l"
 {NC+=yyleng; printf("----- tab len %i ------ \n",yyleng);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 45 "lilpy.l"
+#line 44 "lilpy.l"
 {NC+=yyleng; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 46 "lilpy.l"
+#line 45 "lilpy.l"
 {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 47 "lilpy.l"
+#line 46 "lilpy.l"
 ECHO;
 	YY_BREAK
 #line 763 "lex.yy.c"
@@ -1645,7 +1645,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 47 "lilpy.l"
+#line 46 "lilpy.l"
 
 	int yywrap()
 	{

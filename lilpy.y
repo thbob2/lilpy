@@ -26,13 +26,12 @@
 %}
 %union{
 	char* nom;
-	int int; 
+	int entier; 
 	struct s {char * val; int type;} s;
 }
 %token <s> IDF 
-%token <int> NUM 
-%token IF ELIF ELSE int 
-
+%token <entier> NUM 
+%token IF ELIF ELSE INT
 %token  '(' ')' ':'  ',' '+' '*' '-' '/' 
 %token TAB
 %right '='
@@ -44,21 +43,19 @@
 
 %%
 
-start: Declaration
-	 | inst 
-	 | Stmt
+start: Stmt
 	 ;
 
  Stmt: Declaration
 	| inst
 	| IfStmt
-	| PrintFunc
 	;
 
-Declaration: int IDF {if(!search(&TS,$2)) insert(&TS,$2,int,1,"VAR",NL); }
+Declaration: INT inst {if(!search(&TS,$2)) insert(&TS,$2,INT,1,"VAR",NL); }
+
 ;
 
-inst: IDF '=' Assignment { if(!search(&TS,$1)) insert(&TS,$1,int,1,"VAR",NL);
+inst: IDF '=' Assignment { if(!search(&TS,$1)) insert(&TS,$1,INT,1,"VAR",NL);
 						   insq(&Q,"=",$3.val,"",$1.val,num);
 						   num++;
 						}
@@ -95,93 +92,55 @@ Assignment: Assignment '+' Assignment { char* tempc = malloc(sizeof(10));
 								num++;
 								strcpy($$.val,tempc);
 								}
-	    	| '(' Assignment ')' {$$.type=$2.type; $$.val=$2.val;}
-			| NUM {$$.type=1; $$.val=$1;}
-		  	| IDF  {if(search(&TS,$1)) printf("Erreur a la ligne %d : IDF non declaré\n " ,NL); }
-		  	;
+	| '(' Assignment ')' {$$.type=$2.type; $$.val=$2.val;}
+	| NUM {$$.type=1; $$.val=$1;}
+  	| IDF  {if(search(&TS,$1)) printf("Erreur a la ligne %d : IDF non declaré\n " ,NL); }
+  	;
 
-IfStmt: IF '(' cond ')' ':'  {/*incrémentation*/
-							  nbif++;}							
+IfStmt: ifcond elifstmt;
+
+ifcond: IF '(' cond ')' ':' 
 		TAB Stmt 
-		elifstmt
-;
-elifstmt: elsestmt
-		| ELIF '(' cond ')' ':'/*incrementation*/
+	 {/*incrémentation*/
+							  nbif++;}
+;							  							
+
+elifstmt: ELIF '(' cond ')' ':'/*incrementation*/
 		  TAB Stmt
 		  elsestmt 
-;	
-elsestmt: 
+
+;		|elsestmt
+
+elsestmt: /*epcilonne*/ 
 		| ELSE ':'/*incrementation*/
 		  TAB Stmt 
 ;	
 
 VAR: IDF
-	|NUM
+	|NUM { struct s nums= malloc(sizeof(struct s)); nums.val=$1;}
 	;	
 
-cond: VAR LE VAR { 	majq(&Q,pull(&stack),num+1);
-					int x;
-					x=pull(&stack);
-                    char *tempc;
-                    tempc=malloc(sizeof(10));
-                    sprintf(tempc,"%d",x);
-                    insq(&Q,"BNE",tempc,$1.val,$3.val,num);
-                    majq(&Q,pull(&stack),num);
+cond: VAR LE VAR {  insq(&Q,"BG","",$1.val,$3.val,num);
                     num++;
 
 	}
-	| VAR GE VAR {	majq(&Q,pull(&stack),num+1);
-	                int x;
-	                x=pull(&stack);
-	                char *tempc;
-	                tempc=malloc(sizeof(10));
-	                sprintf(tempc,"%d",x);
-	                insq(&Q,"BGE",tempc,$1.val,$3.val,num);
-	                majq(&Q,pull(&stack),num);
+	| VAR GE VAR   {insq(&Q,"BE","",$1.val,$3.val,num);
 	                num++;
 
 	}
-	| VAR NE VAR {	majq(&Q,pull(&stack),num+1);
-                    int x;
-                    x=pull(&stack);
-                    char *tempc;
-                    tempc=malloc(sizeof(10));
-                    sprintf(tempc,"%d",x);
-                    insq(&Q,"BNE",tempc,$1.val,$3.val,num);
-                    majq(&Q,pull(&stack),num);
+	| VAR NE VAR {	insq(&Q,"BE","",$1.val,$3.val,num);
                     num++;
 
 	}
-	| VAR GT VAR {	majq(&Q,pull(&stack),num+1);
-                    int x;
-                    x=pull(&stack);
-                    char *tempc;
-                    tempc=malloc(sizeof(10));
-                    sprintf(tempc,"%d",x);
-                    insq(&Q,"BG",tempc,$1.val,$3.val,num);
-                    majq(&Q,pull(&stack),num);
+	| VAR GT VAR {  insq(&Q,"BLE","",$1.val,$3.val,num);
                     num++;
 
 	}
-	| VAR LT VAR {	majq(&Q,pull(&stack),num+1);
-                    int x;
-                    x=pull(&stack);
-                    char *tempc;
-                    tempc=malloc(sizeof(10));
-                    sprintf(tempc,"%d",x);
-                    insq(&Q,"BL",tempc,$1.val,$3.val,num);
-                    majq(&Q,pull(&stack),num);
+	| VAR LT VAR {	insq(&Q,"BGE","",$1.val,$3.val,num);
                     num++;
 
 	}
-	| VAR EQ VAR {	majq(&Q,pull(&stack),num+1);
-                    int x;
-                    x=pull(&stack);
-                    char *tempc;
-                    tempc=malloc(sizeof(10));
-                    sprintf(tempc,"%d",x);
-                    insq(&Q,"BE",tempc,$1.val,$3.val,num);
-                    majq(&Q,pull(&stack),num);
+	| VAR EQ VAR {	insq(&Q,"BNE","",$1.val,$3.val,num);
                     num++;
 
 	}

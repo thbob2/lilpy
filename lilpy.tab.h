@@ -44,15 +44,14 @@
      IF = 260,
      ELIF = 261,
      ELSE = 262,
-     PRINT = 263,
-     int = 264,
-     TAB = 265,
-     GT = 266,
-     LT = 267,
-     NE = 268,
-     EQ = 269,
-     GE = 270,
-     LE = 271
+     INT = 263,
+     TAB = 264,
+     GT = 265,
+     LT = 266,
+     NE = 267,
+     EQ = 268,
+     GE = 269,
+     LE = 270
    };
 #endif
 
@@ -63,16 +62,16 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 24 "lilpy.y"
+#line 27 "lilpy.y"
 
 	char* nom;
-	int int; 
+	int entier; 
 	struct s {char * val; int type;} s;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 76 "lilpy.tab.h"
+#line 75 "lilpy.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -11,12 +11,11 @@
 	extern YYSTYPE yylval;
 %}
 IDF [A-Z][A-Za-z]*
-NUM[-]?[0-9]+
-alpha [a-zA-Z]
+NUM [-]?[0-9]+
 TAB ("\t")+
 SPACE(" ")+
 %%
-"int"		{NC += yyleng; return(int);}
+"int"		{NC += yyleng; return(INT);}
 "if"    	{NC=NC+strln(yytext); return(IF);}
 "elif"  	{NC=NC+strln(yytext); return(ELIF);}
 "else"		{NC=NC+strln(yytext); return(ELSE);}
@@ -40,7 +39,7 @@ SPACE(" ")+
        	yylval.nom=strdup(yytext);
        	return(IDF);
     }
-{NUM} {NC=NC+strlen(yytext); yylval.int = atoi(yytext);return NUM;}
+{NUM} {NC=NC+strlen(yytext); yylval.num = atoi(yytext);return NUM;}
 {TAB} {NC+=yyleng; printf("----- tab len %i ------ \n",yyleng);}
 {SPACE} {NC+=yyleng; }
 . {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
