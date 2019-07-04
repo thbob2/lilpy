@@ -5,6 +5,9 @@ typedef struct  STACK{
 	int value;
 	struct STACK *nxt;
 };
+
+
+
 int emptyStack(struct STACK** head){
 	if(*head==NULL) return 1;
 	else return 0;
@@ -13,7 +16,7 @@ int stackSummit(struct STACK** head) {
 	if(emptyStack(head)) return -1;
 	else return (**head).value;
 }
-void push(struct STACK** head,int val){
+STACK** push(struct STACK** head,int val){
 	if(emptyStack(head)){
 		*head = malloc(sizeof(struct STACK));
 		(**head).value = val;
@@ -26,6 +29,7 @@ void push(struct STACK** head,int val){
 		(*newS).nxt = *head;
 		*head = newS;
 	}
+	return head;
 }
 int pull(struct STACK** head){
 	int val=-1;

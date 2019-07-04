@@ -6,7 +6,7 @@
 	
 	extern FILE * yyin;
 	
-	int NL=1,NC=1;
+	int NL=1,NC=1, len =0;
 	
 	extern YYSTYPE yylval;
 %}
@@ -35,12 +35,9 @@ SPACE(" ")+
 "/" 		{NC++; return '/'; }
 {IDF} { 
     if(strlen(yytext)>18){printf("Erreur! l'identifiant %s est trop long (Taille maximum 8 caractere)\n",yytext);}
-       	NC=NC+strlen(yytext); 
-       	yylval.nom=strdup(yytext);
-       	return(IDF);
-    }
-{NUM} {NC=NC+strlen(yytext); yylval.num = atoi(yytext);return NUM;}
-{TAB} {NC+=yyleng; printf("----- tab len %i ------ \n",yyleng);}
+       	NC+= yyleng; yylval.nom=strdup(yytext); return(IDF);}
+{NUM} {NC+=yyleng ; yylval.nom = strdup(yytext);return NUM;}
+{TAB} {NC+=4; printf("----- tab len %i ------ \n",yyleng);}
 {SPACE} {NC+=yyleng; }
 . {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
 %%

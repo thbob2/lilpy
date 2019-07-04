@@ -729,37 +729,34 @@ YY_RULE_SETUP
 #line 36 "lilpy.l"
 { 
     if(strlen(yytext)>18){printf("Erreur! l'identifiant %s est trop long (Taille maximum 8 caractere)\n",yytext);}
-       	NC=NC+strlen(yytext); 
-       	yylval.nom=strdup(yytext);
-       	return(IDF);
-    }
+       	NC+= yyleng; yylval.nom=strdup(yytext); return(IDF);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 42 "lilpy.l"
-{NC=NC+strlen(yytext); yylval.num = atoi(yytext);return NUM;}
+#line 39 "lilpy.l"
+{NC+=yyleng ; yylval.nom = strdup(yytext);return NUM;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 43 "lilpy.l"
-{NC+=yyleng; printf("----- tab len %i ------ \n",yyleng);}
+#line 40 "lilpy.l"
+{NC+=4; printf("----- tab len %i ------ \n",yyleng);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 44 "lilpy.l"
+#line 41 "lilpy.l"
 {NC+=yyleng; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 45 "lilpy.l"
+#line 42 "lilpy.l"
 {printf("Erreur lexicale ligne %d colonne %d ======> %s Inconnu \n",NL,NC,yytext);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 46 "lilpy.l"
+#line 43 "lilpy.l"
 ECHO;
 	YY_BREAK
-#line 763 "lex.yy.c"
+#line 760 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1645,7 +1642,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 46 "lilpy.l"
+#line 43 "lilpy.l"
 
 	int yywrap()
 	{

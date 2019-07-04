@@ -12,7 +12,7 @@ typedef struct QUAD{
 	struct QUAD* nxt;
 
 };
-
+int cptquad = 0;
 void insq(struct QUAD** head,char o1[chlen],char o2[chlen],char o3[chlen],char r[chlen],int n){
 	struct QUAD* flow;
 	flow = *head;
@@ -41,6 +41,7 @@ void insq(struct QUAD** head,char o1[chlen],char o2[chlen],char o3[chlen],char r
     (**head).qnum=n;
     (**head).nxt=NULL;
   }
+  cptquad++;
 }
 
 void showq(struct QUAD** head){
