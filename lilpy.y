@@ -117,29 +117,24 @@ if_rest:ELIF{
 		tempc = malloc(sizeof(10));
 		sprintf(tempc,"%i",cptquad);
 		majq(&Q,pull(&stack),temp);
-
-
-
+	} if_inst ENDIF{
+		verif_ind(if_lvl,NC,1,"ENDIF",6);
+		while(lists[if_lvl]!=NULL){
+			x = pull(&lists[if_lvl]);
+			tempc = malloc(sizeof(10));
+			majq(&Q,x,tempc);
+		}
+		if_lvl--;
 	}
-
-
-elifstmt: ELIF '(' cond ')' ':'/*incrementation*/
-			  elsestmt 
-
-;		|elsestmt
-
-/*
-elsestmt: /*epcilonne*/ 
-//		| ELSE ':'/*incrementation*/
-//		  TAB Stmt  {insq(&Q,"BR","","";"",num);
-//		  			 push(&stack,num);
-//		  			 num++;
-//		  			 push(&stack,num);
-//}
-//;	
+	|ENDIF {
+		verif_ind(if_lvl,NC,1,"ENDIF",6);
+		if_lvl--;
+	}
+;
+	
 
 if_inst: {verif_ind(if_lvl,NC,2,"",len)} Assignment if_inst
-	| IF_STMT
+	| IfStmt
 	|
 	;
 
@@ -147,32 +142,90 @@ VAR: IDF {if(search(&TS,$1)) printf("erreur sémantique idf non déclarer")}
 	|NUM { $$.type=1; $$.val=$1;}
 	;	
 
-cond: VAR LE VAR {  insq(&Q,"BG","",$1.val,$3.val,num);
+cond: VAR LE VAR {  
+					insq(&Q,"BG","",$1.val,$3.val,num);
 					push(&stack,num);
                     num++;
-
+                    if(elif==0){
+                    	head = push(&stack,cptquad);
+                    	insq(&Q,"BR","","","vide",num);
+                    	num++;
+                    }else{
+                    	x = pull(&stack);
+                    	tempc = malloc(sizeof(10));
+                    	sprintf(tempc,"%i",cptquad);
+                    	majq(&Q,x,tempc);
+                    }
 	}
 	| VAR GE VAR   {insq(&Q,"BE","",$1.val,$3.val,num);
 	                push(&stack,num);
 	                num++;
-
+	                if(elif==0){
+                    	head = push(&stack,cptquad);
+                    	insq(&Q,"BR","","","vide",num);
+                    	num++;
+                    }else{
+                    	x = pull(&stack);
+                    	tempc = malloc(sizeof(10));
+                    	sprintf(tempc,"%i",cptquad);
+                    	majq(&Q,x,tempc);
+                    }
 	}
 	| VAR NE VAR {	insq(&Q,"BE","",$1.val,$3.val,num);
                     push(&stack,num);
                     num++;
-
+                    if(elif==0){
+                    	head = push(&stack,cptquad);
+                    	insq(&Q,"BR","","","vide",num);
+                    	num++;
+                    }else{
+                    	x = pull(&stack);
+                    	tempc = malloc(sizeof(10));
+                    	sprintf(tempc,"%i",cptquad);
+                    	majq(&Q,x,tempc);
+                    }
 	}
 	| VAR GT VAR {  insq(&Q,"BLE","",$1.val,$3.val,num);
                     push(&stack,num);
                     num++;
+					if(elif==0){
+                    	head = push(&stack,cptquad);
+                    	insq(&Q,"BR","","","vide",num);
+                    	num++;
+                    }else{
+                    	x = pull(&stack);
+                    	tempc = malloc(sizeof(10));
+                    	sprintf(tempc,"%i",cptquad);
+                    	majq(&Q,x,tempc);
+                    }
 	}
 	| VAR LT VAR {	insq(&Q,"BGE","",$1.val,$3.val,num);
                     push(&stack,num);
                     num++;
+					if(elif==0){
+                    	head = push(&stack,cptquad);
+                    	insq(&Q,"BR","","","vide",num);
+                    	num++;
+                    }else{
+                    	x = pull(&stack);
+                    	tempc = malloc(sizeof(10));
+                    	sprintf(tempc,"%i",cptquad);
+                    	majq(&Q,x,tempc);
+                    }
 	}
 	| VAR EQ VAR {	insq(&Q,"BNE","",$1.val,$3.val,num);
                     push(&stack,num);
                     num++;
+                    if(elif==0){
+                    	head = push(&stack,cptquad);
+                    	insq(&Q,"BR","","","vide",num);
+                    	num++;
+                    }else{
+                    	x = pull(&stack);
+                    	tempc = malloc(sizeof(10));
+                    	sprintf(tempc,"%i",cptquad);
+                    	majq(&Q,x,tempc);
+                    }
 	}
 	;
 
@@ -189,8 +242,8 @@ int main()
 	
 	yyparse();
 	showTab(&TS);
-	operate(&Q,&TS);
-	usless(&Q,&TS);
+	//operate(&Q,&TS);
+	//usless(&Q,&TS);
 	showq(&Q);
 	fclose(yyin);
 	return 0;

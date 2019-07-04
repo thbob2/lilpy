@@ -19,7 +19,7 @@ SPACE(" ")+
 "if"    	{NC=NC+strln(yytext); return(IF);}
 "elif"  	{NC=NC+strln(yytext); return(ELIF);}
 "else"		{NC=NC+strln(yytext); return(ELSE);}
-"print"		{NC=NC+strln(yytext); return(PRINT);}
+
 "=="    	{NC=NC+2; return(EQ);}
 "<="    	{NC=NC+2; return(LE);}
 "!="    	{NC=NC+2; return(NE);}

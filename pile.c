@@ -6,7 +6,7 @@ typedef struct  STACK{
 	struct STACK *nxt;
 };
 
-
+STACK *head;
 
 int emptyStack(struct STACK** head){
 	if(*head==NULL) return 1;

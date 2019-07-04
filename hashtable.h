@@ -5,7 +5,7 @@
 
 #define MAX 150
 #define CHLEN 20
-
+int tab_len = 4;
 typedef struct Entite
 {
 	char name[CHLEN];
